@@ -4,7 +4,8 @@ const {
   createHospital,
   getHospital,
   updateHospital,
-  getSingleHospital
+  getSingleHospital,
+  deleteHospital
 } = require("../controllers/HospitalControllers.js")
 
 const router = express.Router()
@@ -18,5 +19,6 @@ router
   .route("/:id")
     .patch(updateHospital)
     .get(getSingleHospital)
+    .delete(deleteHospital)
 
 module.exports = router
