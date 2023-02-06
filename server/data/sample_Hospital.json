@@ -1,6 +1,7 @@
 [
   {
     "name": "AIIMS Hospital",
+    "email": "aiimshospital263@gmail.com",
     "image": ["img1", "img2", "img3"],
     "location": "Delhi",
     "walletAddress": "0xcd3B766CCDd6AE721141F452C550Ca635964ce71",
@@ -17,13 +18,13 @@
       "medicalTest": true,
       "medicalTherapy": true
     },
-    "medicalSpecialty": {
-      "Anesthesia": true,
+    "Anesthesia": true,
       "AnesthesiaDoctor": {
         "doctors": [
           {
             "name": "Ankush Banik",
             "walletAddress": "0xSjU34o2CCDd6AE745541F452C550Ca635964ce71",
+            "email": "ankushbanik263@gmail.com",
             "image": "DOC1IMG",
             "description": "M.B.B.S general physician",
             "gender": "Male",
@@ -42,6 +43,7 @@
           {
             "name": "Aditi Sarker",
             "walletAddress": "0x72834o2CCDd6AE745541F452C550Cr8372840er8",
+            "email": "aditisarker263@gmail.com",
             "image": "DOC2IMG",
             "description": "M.B.B.S Gynocologic",
             "gender": "Female",
@@ -58,8 +60,7 @@
       "Renal": false,
       "Surgical": true,
       "Toxicologic": true,
-      "Urologic": false
-    },
+      "Urologic": false,
     "openingHours": "24x7"
   }
 ]
