@@ -1,6 +1,9 @@
 const Hospital = require("../model/hospitalModel.js")
 const catchAsync = require("../utils/catchAsync.js")
+const ApiFeatures = require("../utils/apiFeatures.js")
+const AppError = require("../utils/appError.js")
 
+// ----------CREATE HOSPITAL----------
 exports.createHospital = catchAsync(async (req, res, next) => {
   const newHospital = await Hospital.create(req.body)
   res.status(201).json({
@@ -11,8 +14,15 @@ exports.createHospital = catchAsync(async (req, res, next) => {
   })
 })
 
+// ----------GET ALL HOSPITALs----------
 exports.getHospital = catchAsync(async (req, res, next) => {
-  const hospital = await Hospital.find()
+  const features = new ApiFeatures(Hospital.find(), req.query)
+    .filter()
+    .sort()
+    .pagination()
+    .limitFields()
+  
+  const hospital = await features.query
   res.status(201).json({
     status: "Success",
     result: hospital.length,
@@ -22,8 +32,16 @@ exports.getHospital = catchAsync(async (req, res, next) => {
   })
 })
 
+// ----------GET SINGLE HOSPITAL----------
 exports.getSingleHospital = catchAsync(async (req, res, next) => {
-  const hospital = await Hospital.findById(req.params.id)
+  const features = new ApiFeatures(Hospital.findById(req.params.id), req.query)
+    .limitFields()
+    .filter()
+
+  const hospital = await features.query
+  if(!hospital) {
+    return next(new AppError("no hospital found with that ID", 404))
+  }
   res.status(201).json({
     status: "Success",
     data: {
@@ -32,6 +50,7 @@ exports.getSingleHospital = catchAsync(async (req, res, next) => {
   })
 })
 
+// ----------UPDATE A SINGLE HOSPITAL----------
 exports.updateHospital = catchAsync(async (req, res, next) => {
   const hospital = await Hospital.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -45,5 +64,17 @@ exports.updateHospital = catchAsync(async (req, res, next) => {
     data: {
       hospital
     }
+  })
+})
+
+// ----------DELETE A SINGLE HOSPITAL----------
+exports.deleteHospital = catchAsync(async (req, res, next) => {
+  const hospital = await Hospital.findByIdAndDelete(req.params.id)
+  if(!hospital) {
+    return next(new AppError("no hospital found with that ID", 404))
+  }
+  res.status(204).json({
+    status: "Success",
+    data: null
   })
 })
