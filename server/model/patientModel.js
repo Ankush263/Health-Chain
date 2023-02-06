@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const validator = require("validator")
 
 const patientSchema = new mongoose.Schema({
   name: {
@@ -8,6 +9,13 @@ const patientSchema = new mongoose.Schema({
   walletAddress: {
     type: String,
     required: [true, "must provide patient wallet address"]
+  },
+  email: {
+    type: String,
+    required: [true, "please provide patient email"],
+    unique: true,
+    lowercase: true,
+    validator: [validator.isEmail, "Please provide valid email"]
   },
   age: {
     type: Number,
