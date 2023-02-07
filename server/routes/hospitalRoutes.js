@@ -8,12 +8,16 @@ const {
   deleteHospital
 } = require("../controllers/HospitalControllers.js")
 
+const {
+  protect
+} = require("../controllers/authControllers.js")
+
 const router = express.Router()
 
 router
   .route("/")
+    .get(protect, getHospital)
     .post(createHospital)
-    .get(getHospital)
 
 router
   .route("/:id")
