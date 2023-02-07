@@ -1,24 +1,31 @@
 const express = require("express")
 
 const {
-  createPatient,
   getPatient,
   getSinglePatient,
-  updatePatient,
-  deletePatient
 } = require("../controllers/PatientControllers.js")
+
+const{
+  signup,
+  login
+} = require("../controllers/authControllers.js")
 
 const router = express.Router()
 
 router
+  .route("/signup")
+    .post(signup)
+
+router
+  .route("/login")
+    .post(login)
+
+router
   .route("/")
-    .post(createPatient)
     .get(getPatient)
 
 router
   .route("/:id")
     .get(getSinglePatient)
-    .patch(updatePatient)
-    .delete(deletePatient)
 
 module.exports = router
