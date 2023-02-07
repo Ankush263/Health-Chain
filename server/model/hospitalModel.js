@@ -30,13 +30,17 @@ const doctorSchema = new mongoose.Schema({
       },
       gender: {
         type: String,
-        required: [true, "must provide gender"]
+        // required: [true, "must provide gender"]
       },
       specialistAt: {
         type: String,
         required: [true, "must provide specialist at"]
       },
       availableTime: {
+        type: String,
+        required: [true, "must provide available time"]
+      },
+      availableDate: {
         type: String,
         required: [true, "must provide available time"]
       }
@@ -78,11 +82,11 @@ const hospitalSchema = new mongoose.Schema({
   },
   lat: {
     type: String,
-    required: [true, "must provide lat"]
+    // required: [true, "must provide lat"]
   },
   lng: {
     type: String,
-    required: [true, "must provide lng"]
+    // required: [true, "must provide lng"]
   },
   availableService: {
     medicalProcidure: {
