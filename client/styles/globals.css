@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  /* font-family: 'Pacifico', cursive; */
+  font-family: 'Indie Flower', cursive;
+  font-family: 'Pacifico', cursive;
+}
+
+/* a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}*/
+
+@media (prefers-color-scheme: dark) {
+  body {
+    /* background: #DBFF00; */
+    background-image: url('../public/images/main_bg2.png');
+  }
+} 
