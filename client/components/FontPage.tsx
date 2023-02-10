@@ -8,15 +8,14 @@ function FontPage() {
     main: `w-full min-h-screen flex flex-col`,
     animation_box: `w-8/12 flex justify-center items-center mt-10 p-0 border-4 h-48 ml-10 bg-white drop-shadow-3xl`,
     animation_txt: `w-10/12 p-0 text-black font-bold`,
-    // wave_bg: `bg-[url('../public/images/wave2.png')] min-h-screen bg-no-repeat w-full h-full mb-60`,
     wave_bg: `w-full h-full mb-10`,
     content_box: `flex justify-around items-center w-full h-full mt-10`,
     img_container: `mt-10 ml-0 w-4/12 h-4/6`,
     img_box: `w-full h-full`,
     img: `w-full h-full drop-shadow-3xl border-4`,
     btn_box: `w-4/12 h-96 flex flex-col justify-between items-center`,
-    btn_light_pink: `w-36 h-12 border-2 bg-light-pink drop-shadow-2xl active:bg-dark_pink`,
-    btn_light_sky: `w-36 h-12 border-2 bg-light-sky drop-shadow-2xl active:bg-ocen_blue`,
+    btn_light_pink: `w-36 h-12 border-2 bg-light-pink drop-shadow-2xl active:bg-dark_pink active:mt-2 active:drop-shadow-xl`,
+    btn_light_sky: `w-36 h-12 border-2 bg-light-sky drop-shadow-2xl active:bg-ocen_blue active:mt-2 active:drop-shadow-xl`,
     btn_txt: `text-2xl`,
     small_animation_box: `bg-white w-5/12 h-48 border-2 drop-shadow-2.5xl p-2 flex justify-center items-center`
   }
@@ -55,10 +54,10 @@ function FontPage() {
               </div>
             </div>
             <div className={styles.btn_box}>
-              <button className={styles.btn_light_pink}>
+              <Link className={styles.btn_light_pink} href={"/components/AddHospital"}>
                 <span className='text-4xl'>{"<-"}</span>
                 <span className={styles.btn_txt}> {"Hospital"} </span>
-              </button>
+              </Link>
 
               <button className={styles.btn_light_sky}>
                 <Link href="/#PatientSignup">
