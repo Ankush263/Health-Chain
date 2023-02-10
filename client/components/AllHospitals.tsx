@@ -6,11 +6,10 @@ function AllHospitals() {
 
   const styles = {
     main: `min-h-screen flex flex-col`,
-    // wave_bg: `bg-[url('../public/images/wave3.png')] bg-no-repeat bg-top min-h-screen flex flex-col items-center justify-around`
     wave_bg: `bg-top min-h-screen flex flex-col items-center justify-start`,
     search_area: `border-2 w-6/12 h-10 flex drop-shadow-2xl mb-40`,
     sub_box: `w-3/12 bg-white`,
-    btn: `w-3/12 bg-high_contrast_yellow border-l-2`,
+    btn: `w-3/12 bg-high_contrast_yellow border-l-2 active:bg-grinish-yellow`,
     hospital_container: `w-10/12 grid grid-cols-3 mb-20`
   }
 
