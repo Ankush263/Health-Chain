@@ -11,6 +11,7 @@ module.exports = {
   theme: {
     extend: {},
     dropShadow: {
+      'xl': '3px 3px 0px rgba(0, 0, 0, 1)',
       '2xl': '5px 5px 0px rgba(0, 0, 0, 1)',
       '2.5xl': '10px 10px 0px rgba(0, 0, 0, 1)',
       '3xl': '15px 15px 0px rgba(0, 0, 0, 1)',
@@ -26,7 +27,8 @@ module.exports = {
       'dark_pink': '#ED6767',
       'light-sky': '#01E1FF',
       'white': '#FFFFFF',
-      'ocen_blue': '#0099FF'
+      'ocen_blue': '#0099FF',
+      'parrot_green': '#00FF29'
     }
   },
   plugins: [],
