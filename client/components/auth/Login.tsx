@@ -6,8 +6,8 @@ function Login() {
     main_box: `bg-dark_pink w-full drop-shadow-3xl border-4 flex flex-col justify-around p-10`,
     input_bg: `h-12 mt-5 mb-5 flex justify-between`,
     small_input_box: `bg-white border-2 drop-shadow-2xl w-5/12 h-full`,
-    connect_wallet: `bg-high_contrast_yellow border-2 drop-shadow-2xl w-5/12 h-full flex flex-col justify-center items-center`,
-    signup: `bg-light-sky border-2 drop-shadow-2xl w-5/12 h-full mx-auto`,
+    connect_wallet: `bg-high_contrast_yellow border-2 drop-shadow-2xl w-5/12 h-full flex flex-col justify-center items-center active:mt-2 active:drop-shadow-xl active:bg-grinish-yellow`,
+    signup: `bg-light-sky border-2 drop-shadow-2xl w-5/12 h-full mx-auto active:mt-2 active:drop-shadow-xl active:bg-ocen_blue`,
     large_input_box: `bg-white border-2 drop-shadow-2xl w-full h-full`,
   }
 
