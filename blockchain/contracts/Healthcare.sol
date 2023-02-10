@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract HealthCare {
+contract prescription {
     event DoctorApproved(address indexed _doctor);
 
     using Counters for Counters.Counter;
@@ -26,10 +26,13 @@ contract HealthCare {
 
     Report[] private reports;
     Patient[] private patients;
+    address[] private allHospitals;
 
-    // Hospital address
-    address public Hospital;
+    // Owner address
+    address public owner;
 
+    // approveHospitalAddress[_hospitalAddress] = true / false
+    mapping(address => bool) private approveHospitalAddress;
     // approveDoctorAddress[_doctorAddress] = true / fasle
     mapping(address => bool) private approveDoctorAddress;
     // approvePatient[_patientAddress] = true / false
@@ -46,22 +49,29 @@ contract HealthCare {
 
 
     constructor() {
-        Hospital = msg.sender;
+        owner = msg.sender;
     }
 
-    modifier onlyHospital {
-        require(msg.sender == Hospital);
-        _;
+    function makeThisAddressHospital() public {
+        require(approveHospitalAddress[msg.sender] == false, "Already approved");
+        approveHospitalAddress[msg.sender] = true;
+        allHospitals.push(msg.sender);
     }
 
-    function allowDoctor(address _doctor) public onlyHospital {
+    function showAllHospitals() public view returns(address[] memory) {
+        return allHospitals;
+    }
+
+    function allowDoctor(address _doctor) public {
+        require(approveHospitalAddress[msg.sender] == true, "Not Hospital");
         approveDoctorAddress[_doctor] = true;
-        allDoctors[Hospital].push(_doctor);
+        allDoctors[msg.sender].push(_doctor);
         emit DoctorApproved(_doctor);
     }
 
     function showAllDoctors() public view returns(address[] memory) {
-        return allDoctors[Hospital];
+        require(approveHospitalAddress[msg.sender] == true, "Not Hospital");
+        return allDoctors[msg.sender];
     }
 
     function 
@@ -118,6 +128,7 @@ contract HealthCare {
     }
 
     function getAllMyPatients() public view returns(address[] memory) {
+        require(approveDoctorAddress[msg.sender] == true, "Not Doctor");
         return allPatients[msg.sender];
     }
 
