@@ -1,13 +1,41 @@
 import React, { useState } from 'react';
 import BookingPopup from './BookingPopup';
+import Swal from 'sweetalert2';
 
 function DoctorCard() {
-  const [bookingStart, setBookingStart] = useState(false)
+  const [booked, setBooked] = useState(false)
+  const [bookingEvent, setBookingEvent] = useState({
+    date: '',
+    time: ''
+  })
 
   const handleBooking = () => {
     try{
-      setBookingStart(prev => !prev)
+      // setBookingStart(prev => !prev)
 
+      Swal.fire({
+        title: 'Booking Form',
+        html: `<input type="date" id="date" class="swal2-input" placeholder="date">
+        <input type="time" id="time" class="swal2-input" placeholder="time">`,
+        confirmButtonText: 'Book now',
+        focusConfirm: false,
+        preConfirm: () => {
+          const date = (Swal.getPopup()?.querySelector('#date') as HTMLInputElement)?.value
+          const time = (Swal.getPopup()?.querySelector('#time') as HTMLInputElement)?.value
+          if (!date || !time) {
+            Swal.showValidationMessage(`Please enter date and time`)
+          }
+          return { date: date, time: time }
+        }
+      }).then((result: any) => {
+        Swal.fire(`
+          Time: ${result.value?.date}
+          Date: ${result.value?.time}
+        `.trim())
+        setBookingEvent({ date: result.value?.date, time: result.value?.time })
+      })
+
+      setBooked(true)
 
     }catch(err) {
       console.log(err)
@@ -37,14 +65,19 @@ function DoctorCard() {
             <span>Mon-Fri 10:00am - 5:00 pm</span>
           </div>
           <div className={styles.btn_container}>
+            {
+              // !booked ?
+            }
             <button className={styles.yellow_btn} onClick={handleBooking}>
               <span className='text-xl'>Book Now</span>
             </button>
             {
-              bookingStart &&
-              <div className={styles.popup_box}>
-                <BookingPopup />
-              </div>
+              // bookingStart &&
+              // <div className={styles.popup_box}>
+              //   <BookingPopup />
+              // </div>
+
+              
             }
             <button className={styles.blue_btn}>
               <span className='text-xl'>Show report</span>
