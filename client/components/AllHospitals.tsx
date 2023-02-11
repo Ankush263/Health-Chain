@@ -1,8 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import HospitalCard from './cards/HospitalCard';
 import Link from 'next/link';
+import { getAllHospitals } from '../Api';
 
 function AllHospitals() {
+  const [allHospitals, setAllHospitals] = useState([])
+
+  // const data = {
+  //   _id: 
+  // }
+
+  const handleClick = async () => {
+    try {
+      console.log(await getAllHospitals())
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const fetch = async () => {
+    try {
+      const response = await getAllHospitals()
+      console.log(response.data.data.hospital)
+      setAllHospitals(response.data.data.hospital)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetch()
+  }, [])
 
   const styles = {
     main: `min-h-screen flex flex-col`,
@@ -33,17 +61,36 @@ function AllHospitals() {
           </button>
         </div>
         <div className={styles.hospital_container}>
-          <Link href="/components/HospitalDetails">
+
+          {
+            allHospitals.map((hospital: any) => {
+              return (
+                <Link 
+                  href={{
+                    pathname: "/components/HospitalDetails",
+                    query: {data: hospital._id}
+                  }}
+                >
+                  <HospitalCard name={hospital.name} />
+                </Link>
+              )
+            })
+          }   
+
+          {/* <Link href="/components/HospitalDetails">
             <HospitalCard />
           </Link>
+          <div onClick={handleClick}>
+            
+          <HospitalCard />
+          </div>
           <HospitalCard />
           <HospitalCard />
           <HospitalCard />
           <HospitalCard />
           <HospitalCard />
           <HospitalCard />
-          <HospitalCard />
-          <HospitalCard />
+          <HospitalCard /> */}
         </div>
       </div>
     </div>
