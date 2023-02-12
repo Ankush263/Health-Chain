@@ -16,7 +16,7 @@ const router = express.Router()
 
 router
   .route("/")
-    .get(protect, getHospital)
+    .get(getHospital)
     .post(createHospital)
 
 router
