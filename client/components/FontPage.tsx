@@ -4,6 +4,24 @@ import { TypeAnimation } from 'react-type-animation';
 
 function FontPage() {
 
+  const handleConnect = async () => {
+    try{
+      
+      if (typeof window !== 'undefined') {
+        // const chainId = await window.ethereum.request({ method: 'eth_chainId' })
+        // if(chainId != '0x13881') {
+        //   await window.ethereum.request({
+        //     method: 'wallet_switchEthereumChain',
+        //     params: [{ chainId: '0x13881' }],
+        //   })
+        // }
+        await window.ethereum.request({ method: 'eth_requestAccounts' })
+      }
+    }catch(err) {
+      console.log(err)
+    }
+  }
+
   const styles = {
     main: `w-full min-h-screen flex flex-col`,
     animation_box: `w-8/12 flex justify-center items-center mt-10 p-0 border-4 h-48 ml-10 bg-white drop-shadow-3xl`,
@@ -54,7 +72,7 @@ function FontPage() {
               </div>
             </div>
             <div className={styles.btn_box}>
-              <Link className={styles.btn_light_pink} href={"/components/AddHospital"}>
+              <Link className={styles.btn_light_pink} href={"/components/AddHospital"} onClick={handleConnect}>
                 <span className='text-4xl'>{"<-"}</span>
                 <span className={styles.btn_txt}> {"Hospital"} </span>
               </Link>
