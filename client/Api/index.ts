@@ -10,9 +10,10 @@ const BOOKING_API = axios.create({ baseURL: BOOKING_URL })
 
 // ----------ALL HOSPITAL FUNCTIONS----------
 export const getAllHospitals = () => HOSPITAL_API.get('/')
+export const getHospitalByWalletAddress = (_walletAddress: any) => HOSPITAL_API.get(`/?walletAddress=${_walletAddress}`)
 export const getSingleHospitalById = (id: any) => HOSPITAL_API.get(`/${id}`)
 export const createHospital = (_hospitalDetails: any) => HOSPITAL_API.post('/', _hospitalDetails)
-export const updateHospital = (_updateDetails: any) => HOSPITAL_API.patch('/:id', _updateDetails)
+export const updateHospital = (_id: any, _updateDetails: any) => HOSPITAL_API.patch(`/${_id}`, _updateDetails)
 
 // ----------ALL PATIENT FUNCTIONS----------
 export const signup = (_signupDetails: any) => PATIENT_API.post('/signup', _signupDetails)
