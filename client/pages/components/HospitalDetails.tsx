@@ -1,7 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import DoctorCard from '../../components/cards/DoctorCard';
+import { useRouter } from 'next/router';
+import { getSingleHospitalById } from '../../Api';
 
 function HospitalDetails() {
+  const router = useRouter()
+
+  const fetch = async () => {
+    try {
+      const response = await getSingleHospitalById(router.query.data)
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetch()
+  }, [])
 
   const styles = {
     main: `w-full min-h-screen flex flex-col justify-center items-center`,
@@ -28,6 +44,7 @@ function HospitalDetails() {
               src="/images/hospital.png" 
               alt="" 
               className='drop-shadow-2.5xl border-4' 
+              onClick={() => console.log(router)}
             />
           </div>
           <div className={styles.name_container}>
