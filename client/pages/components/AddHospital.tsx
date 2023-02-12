@@ -1,14 +1,132 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { TypeAnimation } from 'react-type-animation';
+import { ethers } from 'ethers';
+import FileBase64 from 'react-file-base64';
+import { createHospital, getHospitalByWalletAddress } from '../../Api';
+import Swal from 'sweetalert2';
+import { uploadFileToIPFS } from '../../Api/pinata';
+import ABI from '../../utils/Healthcare.json';
 
 function AddHospital() {
-  const [filename, setFilename] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [filename, setFilename] = useState('')
+  const [uploaded, setUploaded] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [connected, setConnected] = useState(false)
+  const [hospitalDetails, setHospitalDetails] = useState({
+    name: '',
+    walletAddress: '',
+    email: '',
+    description: '',
+    image: '',
+    location: '',
+    phone: ['']
+  })
 
-  const onFileChange = () => {
-    setFilename(inputRef.current!.files![0].name);
-  };
+  const deployAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  let provider: any
+  let signer: any
+  if(typeof window !== 'undefined') {
+    provider = new ethers.providers.Web3Provider(window.ethereum)
+    signer = provider.getSigner()
+  }
+
+  const fetch = async () => {
+    try {
+      const address = await signer.getAddress()
+      const response = await getHospitalByWalletAddress(address)
+      if(response.data.data.hospital.length !== 0) {
+        window.location.replace(`/components/Hospital/${address}`)
+      }
+      console.log(response)
+      console.log(address)
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+  const uploadFile = async (e: any) => {
+    let file = e.target.files[0]
+    try {
+      const response = await uploadFileToIPFS(file)
+      if(response.success === true) {
+        setHospitalDetails({ ...hospitalDetails, image: `${response.pinataURL}` })
+        // console.log(response.pinataURL)
+        setUploaded(true)
+        const data1 = (response.pinataURL).slice(34, 41)
+        const data2 = (response.pinataURL).slice(65, (response.pinataURL).length)
+        setFilename(`${data1}.....${data2}`)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleConnect = async () => {
+    try{
+      
+      if (typeof window !== 'undefined') {
+        // const chainId = await window.ethereum.request({ method: 'eth_chainId' })
+        // if(chainId != '0x13881') {
+        //   await window.ethereum.request({
+        //     method: 'wallet_switchEthereumChain',
+        //     params: [{ chainId: '0x13881' }],
+        //   })
+        // }
+        await window.ethereum.request({ method: 'eth_requestAccounts' })
+        setConnected(true)
+        setHospitalDetails({...hospitalDetails, walletAddress: await signer.getAddress()})
+      }
+    }catch(err) {
+      console.log(err)
+    }
+  }
+
+  // const 
+
+  const handleSubmit = async () => {
+    try {
+      console.log(hospitalDetails)
+      const contract = new ethers.Contract(deployAddress, ABI.abi, signer)
+      const response = await createHospital({
+        name: hospitalDetails.name,
+        email: hospitalDetails.email,
+        image: hospitalDetails.image,
+        location: hospitalDetails.location,
+        walletAddress: hospitalDetails.walletAddress,
+        description: hospitalDetails.description,
+        telephone: hospitalDetails.phone
+      })
+
+      const allowHospital = await contract.makeThisAddressHospital()
+
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'You Successfully add your Hospital',
+        showConfirmButton: false,
+        timer: 1500
+      })
+
+      const id = response.data.data.hospital._id
+      const address = await signer.getAddress()
+      window.location.replace(`/components/Hospital/${address}`)
+      
+    } catch (error: any) {
+      console.log(error)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: `${error.response.data.message}`
+      })
+    }
+  }
+
+  useEffect(() => {
+    fetch()
+  }, [])
 
   const styles = {
     main: `w-full h-screen flex justify-around items-center`,
@@ -69,10 +187,15 @@ function AddHospital() {
               type="text" 
               className='w-full h-full p-2 placeholder:text-2xl'
               placeholder='name:'
+              onChange={(e) => setHospitalDetails({ ...hospitalDetails, name: e.target.value })}
             />
           </div>
-          <button className={styles.connect_wallet}>
-            <span>Connect Wallet</span>
+          <button className={styles.connect_wallet} onClick={handleConnect}>
+            {
+              connected ?
+              <span>Connected</span> :
+              <span>Connect Wallet</span>
+            }
           </button>
         </div>
         <div className={styles.input_bg}>
@@ -81,6 +204,7 @@ function AddHospital() {
               type="email"
               className='w-full h-full p-2 placeholder:text-2xl'
               placeholder='email:'
+              onChange={(e) => setHospitalDetails({ ...hospitalDetails, email: e.target.value })}
             />
           </div>
         </div>
@@ -93,22 +217,23 @@ function AddHospital() {
               placeholder='description:'
               cols={30}
               rows={10}
+              onChange={(e) => setHospitalDetails({ ...hospitalDetails, description: e.target.value })}
             ></textarea>
           </div>
         </div>
 
         <div className={styles.input_bg}>
           {/* <div className={styles.l_small_input_box}>
-            <input 
-              type="file" 
-              className='w-full h-full p-2 placeholder:text-2xl bg-ocen_blue'
-              placeholder=''
+            <FileBase64 
+              type="file"
+              multiple={false}
+              onDone={(e: any) => setHospitalDetails({ ...hospitalDetails, image: `${e.base64}` })}
             />
           </div> */}
           <div className="flex items-center">
             <label className={styles.l_small_input_box}>
-              <span>{`Upload Image`}</span>
-              <input type="file" ref={inputRef} onChange={onFileChange} className="hidden"/>
+              <span>{uploaded ? `Uploaded` : `Upload Image`}</span>
+              <input type="file" ref={inputRef} onChange={uploadFile} className="hidden"/>
             </label>
             <span className="ml-3 text-gray-600">{filename}</span>
           </div>
@@ -119,6 +244,7 @@ function AddHospital() {
               type="text"
               className='w-full h-full p-2 placeholder:text-2xl'
               placeholder='location:'
+              onChange={(e) => setHospitalDetails({ ...hospitalDetails, location: e.target.value })}
             />
           </div>
         </div>
@@ -128,14 +254,17 @@ function AddHospital() {
               type="tel"
               className='w-full h-full p-2 placeholder:text-2xl'
               placeholder='phone:'
+              onChange={(e) => setHospitalDetails({ ...hospitalDetails, phone: [e.target.value]})}
             />
           </div>
         </div>
         
         <div className={styles.input_bg}>
-          <Link href={"/components/HospitalDashboard"} className={styles.signup}>
+          {/* <Link href={"/components/HospitalDashboard"} className={styles.signup}> */}
+          <button className={styles.signup} onClick={handleSubmit}>
             <span>{`Add Hospital +`}</span>
-          </Link>
+          </button>
+          {/* </Link> */}
         </div>
       </div>
       </div>
