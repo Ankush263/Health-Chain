@@ -39,6 +39,11 @@ class ApiFeatures {
     this.query = this.query.skip(skip).limit(limit)
     return this
   }
+
+  // elementMatchInHospitalSpecialistAt(q) {
+  //   this.query = this.query.findOne({ "allDoctors": { $elemenyMatch: { "doctors.specialistAt": q } } })
+  //   return this
+  // }
 }
 
 module.exports = ApiFeatures
