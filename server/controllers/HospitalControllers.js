@@ -1,7 +1,12 @@
-const Hospital = require("../model/hospitalModel.js")
+const Hospital = require("../model/hospitalModel2.js")
 const catchAsync = require("../utils/catchAsync.js")
 const ApiFeatures = require("../utils/apiFeatures.js")
 const AppError = require("../utils/appError.js")
+
+const elementMatchInHospitalSpecialistAt = (req, res, next) => {
+  console.log(req.body)
+  next()
+}
 
 // ----------CREATE HOSPITAL----------
 exports.createHospital = catchAsync(async (req, res, next) => {
@@ -37,6 +42,7 @@ exports.getSingleHospital = catchAsync(async (req, res, next) => {
   const features = new ApiFeatures(Hospital.findById(req.params.id), req.query)
     .limitFields()
     .filter()
+    .elementMatchInHospitalSpecialistAt(req.query)
 
   const hospital = await features.query
   if(!hospital) {
