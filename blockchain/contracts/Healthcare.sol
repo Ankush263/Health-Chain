@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract prescription {
+contract Healthcare {
     event DoctorApproved(address indexed _doctor);
 
     using Counters for Counters.Counter;
