@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
-function HospitalCard() {
+function HospitalCard(props: any) {
 
   const styles = {
     main_container: `w-96 h-96 flex flex-col justify-between items-center`,
@@ -14,7 +14,7 @@ function HospitalCard() {
         <img src="/images/hospital.png" alt="" className='w-full h-full border-2' />
       </div>
       <div className={styles.name_container}>
-        <span>ABC Hospital</span>
+        <span>{props.name}</span>
       </div>
     </div>
   )
