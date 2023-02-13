@@ -14,6 +14,7 @@ export const getHospitalByWalletAddress = (_walletAddress: any) => HOSPITAL_API.
 export const getSingleHospitalById = (id: any) => HOSPITAL_API.get(`/${id}`)
 export const createHospital = (_hospitalDetails: any) => HOSPITAL_API.post('/', _hospitalDetails)
 export const updateHospital = (_id: any, _updateDetails: any) => HOSPITAL_API.patch(`/${_id}`, _updateDetails)
+export const getDoctorByWalletAddress = (_id: any, _walletAddress: any) => HOSPITAL_API.get(`/${_id}/${_walletAddress}`)
 
 // ----------ALL PATIENT FUNCTIONS----------
 export const signup = (_signupDetails: any) => PATIENT_API.post('/signup', _signupDetails)
