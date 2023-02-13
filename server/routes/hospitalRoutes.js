@@ -1,11 +1,13 @@
 const express = require("express")
+const Hospital = require("../model/hospitalModel.js")
 
 const {
   createHospital,
   getHospital,
   updateHospital,
   getSingleHospital,
-  deleteHospital
+  deleteHospital,
+  findDoctor
 } = require("../controllers/HospitalControllers.js")
 
 const {
@@ -24,5 +26,10 @@ router
     .patch(updateHospital)
     .get(getSingleHospital)
     .delete(deleteHospital)
+
+router
+  .route("/:id/:walletAddress")
+    .get(findDoctor)
+
 
 module.exports = router
