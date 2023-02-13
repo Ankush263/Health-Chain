@@ -1,6 +1,6 @@
 import React from 'react'
 
-function DoctorDetailsCard() {
+function DoctorDetailsCard(props: any) {
 
   const styles = {
     doc_container: `border-2 w-full mt-10 h-32 flex justify-start items-center bg-white drop-shadow-2.5xl`,
@@ -15,14 +15,14 @@ function DoctorDetailsCard() {
     <div>
       <div className={styles.doc_container}>
           <div className={styles.sm_img_container}>
-            <img src="/images/my_img.jpg" alt="" className='w-full h-full rounded-full' />
+            <img src={`${props.image}`} alt="" className='w-full h-full rounded-full' onClick={() => console.log(props)} />
           </div>
           <div className={styles.doc_detail_container}>
-            <span className={styles.semibold_txt}>Dr. Ankush Banik</span>
-            <span className='text-sm'>0x90545F5cFfe5a25700542b32653fc884920E1aB8</span>
-            <span>M.B.B.S General Physician, US ABC ueueu</span>
-            <span>General Physician</span>
-            <span>Mon-Fri 10:00am - 5:00 pm</span>
+            <span className={styles.semibold_txt}>{props.name} ({props.email})</span>
+            <span className='text-sm'>{props.walletAddress}</span>
+            <span>{props.description}</span>
+            <span>{props.specialistAt}</span>
+            <span>{props.day}  {props.time}</span>
           </div>
         </div>
     </div>
