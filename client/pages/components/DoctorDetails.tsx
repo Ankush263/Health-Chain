@@ -1,15 +1,45 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import NotificationCard from '../../components/cards/NotificationCard';
 import PatientCard from '../../components/cards/PatientCard';
+import { ethers } from 'ethers';
+import ABI from "../../utils/Healthcare.json"
+import { getDoctorByWalletAddress, getHospitalByWalletAddress } from '../../Api';
 
 function DoctorDetails() {
   const [filename, setFilename] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const deployAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  let provider: any
+  let signer: any
+  if(typeof window !== 'undefined') {
+    provider = new ethers.providers.Web3Provider(window.ethereum)
+    signer = provider.getSigner()
+  }
+
+
+  const fetch = async () => {
+    try {
+      const contract = new ethers.Contract(deployAddress, ABI.abi, signer)
+      const hospitalAddress = await contract.showMyHospital()
+      const hospitalResponse = await getHospitalByWalletAddress(hospitalAddress)
+      const id = hospitalResponse.data.data.hospital[0]._id
+      const doctor = await getDoctorByWalletAddress(id, hospitalAddress)
+      console.log("Hospital Id is: ", id)
+      console.log("doctor is: ", doctor)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const onFileChange = () => {
     setFilename(inputRef.current!.files![0].name);
   };
+
+  useEffect(() => {
+    fetch()
+  }, [])
 
   const styles = {
     main: `w-full flex flex-col items-center`,
@@ -29,7 +59,7 @@ function DoctorDetails() {
       <div className={styles.upper}>
         <div className={styles.left_container}>
           <div className={styles.img_container}>
-            <img src="/images/unnamed.png" alt="" className='w-full h-full'  />
+            <img src="/images/unnamed.png" alt="" className='w-full h-full' onClick={fetch}  />
           </div>
           <div className={styles.txt_container}>
           <div className={styles.name_container}>
