@@ -1,12 +1,7 @@
-const Hospital = require("../model/hospitalModel2.js")
+const Hospital = require("../model/hospitalModel.js")
 const catchAsync = require("../utils/catchAsync.js")
 const ApiFeatures = require("../utils/apiFeatures.js")
 const AppError = require("../utils/appError.js")
-
-const elementMatchInHospitalSpecialistAt = (req, res, next) => {
-  console.log(req.body)
-  next()
-}
 
 // ----------CREATE HOSPITAL----------
 exports.createHospital = catchAsync(async (req, res, next) => {
@@ -42,7 +37,6 @@ exports.getSingleHospital = catchAsync(async (req, res, next) => {
   const features = new ApiFeatures(Hospital.findById(req.params.id), req.query)
     .limitFields()
     .filter()
-    .elementMatchInHospitalSpecialistAt(req.query)
 
   const hospital = await features.query
   if(!hospital) {
@@ -53,6 +47,25 @@ exports.getSingleHospital = catchAsync(async (req, res, next) => {
     data: {
       hospital
     }
+  })
+})
+
+// ----------FIND A DOCTOR FROM HOSPITAL BY IT's WALLETADDRESS----------
+
+exports.findDoctor = catchAsync(async (req, res, next) => {
+  const hospital = await Hospital.findOne(
+    {
+      "allDoctors.doctors.walletAddress": req.params.walletAddress 
+    }
+  )
+
+  const doctor = hospital?.allDoctors.doctors.find(doctor => doctor.walletAddress === req.params.walletAddress)
+  console.log(hospital)
+  res.status(200).json({
+    status: "Success",
+    data: {
+      doctor
+      }
   })
 })
 
