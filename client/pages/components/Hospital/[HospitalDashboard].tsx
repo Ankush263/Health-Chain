@@ -2,33 +2,28 @@ import Link from 'next/link'
 import React, { useState, useRef, useEffect } from 'react'
 import DoctorDetailsCard from '../../../components/cards/DoctorDetailsCard'
 import { useRouter } from 'next/router';
-import { getHospitalByWalletAddress } from '../../../Api';
+import { getHospitalByWalletAddress, updateHospital } from '../../../Api';
 import { ethers } from 'ethers';
+import { uploadFileToIPFS } from '../../../Api/pinata';
+import ABI from '../../../utils/Healthcare.json'
+import Swal from 'sweetalert2';
 
 function HospitalDashboard() {
   interface hospitalDetailsType {
+    _id: String,
     image: any;
     name: String,
     walletAddress: String,
     email: String,
     description: String,
     location: String,
-    telephone: [String]
+    telephone: [String],
+    allDoctors: {
+      doctors: []
+    }
   }
 
-  const router = useRouter()
-  const [filename, setFilename] = useState('');
-  const [hospitalDetails, setHospitalDetails] = useState<hospitalDetailsType>({
-    image: '',
-    name: '',
-    walletAddress: '',
-    email: '',
-    description: '',
-    location: '',
-    telephone: ['']
-  })
-  const inputRef = useRef<HTMLInputElement>(null);
-
+  const deployAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
   let provider: any
   let signer: any
   if(typeof window !== 'undefined') {
@@ -36,9 +31,33 @@ function HospitalDashboard() {
     signer = provider.getSigner()
   }
 
-  const onFileChange = () => {
-    setFilename(inputRef.current!.files![0].name);
-  };
+  const [filename, setFilename] = useState('');
+  const [uploaded, setUploaded] = useState(false)
+  const [hospitalDetails, setHospitalDetails] = useState<hospitalDetailsType>({
+    _id: '',
+    image: '',
+    name: '',
+    walletAddress: '',
+    email: '',
+    description: '',
+    location: '',
+    telephone: [''],
+    allDoctors: {
+      doctors: []
+    }
+  })
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [doctorDetails, setDoctorDetails] = useState({
+    name: ``,
+    walletAddress: '',
+    email: '',
+    description: '',
+    image: '',
+    specialistAt: '',
+    time: '',
+    day: ''
+  })
+
 
   const fetch = async () => {
     try {
@@ -46,17 +65,96 @@ function HospitalDashboard() {
       const response = await getHospitalByWalletAddress(walletAddress)
       const data = response.data.data.hospital[0]
       setHospitalDetails(data)
-      console.log("respons: ", response)
+      setDoctorDetails(response.data.data.hospital[0]?.allDoctors?.doctors)
       return response
     } catch (error) {
       console.log(error)
     }
   }
-  const handleClick = async () => {
+
+  const uploadFile = async (e: any) => {
+    let file = e.target.files[0]
     try {
-      fetch()
+      const response = await uploadFileToIPFS(file)
+      if(response.success === true) {
+        setDoctorDetails({ ...doctorDetails, image: `${response.pinataURL}` })
+        setUploaded(true)
+        const data1 = (response.pinataURL).slice(34, 41)
+        const data2 = (response.pinataURL).slice(75, (response.pinataURL).length)
+        setFilename(`${data1}.....${data2}`)
+      }
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  const handleAddDoctor = async () => {
+    try {
+      const contract = new ethers.Contract(deployAddress, ABI.abi, signer)
+      const id = hospitalDetails?._id
+      const walletAddress = await signer.getAddress()
+      const response = await getHospitalByWalletAddress(walletAddress)
+      const doctor = response.data.data.hospital[0]?.allDoctors?.doctors
+
+      let addDoctor: any
+      if(typeof doctor === 'undefined') {
+        addDoctor = {
+          allDoctors: {
+            doctors: [
+              {
+                name: doctorDetails.name,
+                walletAddress: doctorDetails.walletAddress,
+                email: doctorDetails.email,
+                image: doctorDetails.image,
+                description: doctorDetails.description,
+                specialistAt: doctorDetails.specialistAt,
+                availableTime: doctorDetails.time,
+                availableDate: doctorDetails.day
+              }
+            ]
+          }
+        }
+      }else {
+        addDoctor = {
+          allDoctors: {
+            doctors: [
+              ...doctor,
+              {
+                name: doctorDetails?.name,
+                walletAddress: doctorDetails?.walletAddress,
+                email: doctorDetails?.email,
+                image: doctorDetails?.image,
+                description: doctorDetails?.description,
+                specialistAt: doctorDetails?.specialistAt,
+                availableTime: doctorDetails?.time,
+                availableDate: doctorDetails?.day
+              }
+            ]
+          }
+        }
+      }
+
+      const add = await updateHospital(id, addDoctor)
+      const doctorAddress = doctorDetails?.walletAddress
+      await contract.allowDoctor(doctorAddress)
+
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'You Successfully add a Doctor',
+        showConfirmButton: false,
+        timer: 1500
+      })
+
+      window.location.reload()
+
+    } catch (error: any) {
+      console.log(error)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: `${error.response.data.message}`
+      })
     }
   }
 
@@ -90,7 +188,7 @@ function HospitalDashboard() {
     small_input_box: `bg-white border-2 drop-shadow-2xl w-5/12 h-full`,
     l_small_input_box: `bg-ocen_blue border-2 drop-shadow-2xl w-full p-2 h-12 ml-auto cursor-pointer active:drop-shadow-xl active:mt-2`,
     connect_wallet: `bg-high_contrast_yellow border-2 drop-shadow-2xl w-5/12 h-full flex flex-col justify-center items-center active:mt-2 active:drop-shadow-xl active:bg-grinish-yellow`,
-    signup: `bg-light-sky border-2 drop-shadow-2xl w-5/12 h-10 mx-auto active:mt-2 active:drop-shadow-xl active:bg-ocen_blue pl-10 pt-1`,
+    signup: `bg-light-sky border-2 drop-shadow-2xl w-5/12 h-10 mx-auto active:mt-2 active:drop-shadow-xl active:bg-ocen_blue`,
     large_input_box: `bg-white border-2 drop-shadow-2xl w-full h-full`,
   }
   return (
@@ -100,7 +198,6 @@ function HospitalDashboard() {
           <div className={styles.img_container}>
             <img 
               src={`${hospitalDetails?.image}`}
-              // src="/images/hospital.png"
               alt="" 
               className='drop-shadow-2.5xl border-4 w-full h-full' 
               onClick={() => console.log(hospitalDetails)}
@@ -119,7 +216,7 @@ function HospitalDashboard() {
             <span className={styles.semibold_txt}>Location:</span>
             <span>{hospitalDetails?.location}</span>
           </div>
-          <div className={styles.phone_container} onClick={handleClick}>
+          <div className={styles.phone_container}>
             <span className={styles.semibold_txt}>Phone:</span>
             <span>{hospitalDetails?.telephone}</span>
           </div>
@@ -146,6 +243,7 @@ function HospitalDashboard() {
                   type="text" 
                   className='w-full h-full p-2 placeholder:text-2xl'
                   placeholder='name:'
+                  onChange={(e) => setDoctorDetails({ ...doctorDetails, name: e.target.value })}
                 />
               </div>
               <div className={styles.small_input_box}>
@@ -153,11 +251,9 @@ function HospitalDashboard() {
                   type="text" 
                   className='w-full h-full p-2 placeholder:text-xl'
                   placeholder='wallet address:'
+                  onChange={(e) => setDoctorDetails({ ...doctorDetails, walletAddress: e.target.value })}
                 />
               </div>
-              {/* <div className={styles.connect_wallet}>
-                <span>Connect Wallet</span>
-              </div> */}
             </div>
             <div className={styles.input_bg}>
               <div className={styles.large_input_box}>
@@ -165,6 +261,7 @@ function HospitalDashboard() {
                   type="email"
                   className='w-full h-full p-2 placeholder:text-2xl'
                   placeholder='email:'
+                  onChange={(e) => setDoctorDetails({ ...doctorDetails, email: e.target.value })}
                 />
               </div>
             </div>
@@ -177,37 +274,38 @@ function HospitalDashboard() {
                   placeholder='description:'
                   cols={30}
                   rows={10}
+                  onChange={(e) => setDoctorDetails({ ...doctorDetails, description: e.target.value })}
                 ></textarea>
               </div>
             </div>
 
             <div className={styles.input_bg}>
-              {/* <div className={styles.l_small_input_box}>
-                <input 
-                  type="file" 
-                  className='w-full h-full p-2 placeholder:text-2xl bg-ocen_blue'
-                  placeholder=''
-                />
-              </div> */}
-              <div className="flex items-center">
+              <div className="flex flex-col items-start">
                 <label className={styles.l_small_input_box}>
-                  <span>{`Upload Image`}</span>
-                  <input type="file" ref={inputRef} onChange={onFileChange} className="hidden"/>
+                  <span>{uploaded ? `Uploaded ✅` : `Upload Image`}</span>
+                  <input type="file" ref={inputRef} onChange={uploadFile} className="hidden"/>
                 </label>
                 <span className="ml-3 text-gray-600">{filename}</span>
               </div>
 
               <div className={styles.small_input_box}>
-                {/* <input 
-                  type="text" 
-                  className='w-full h-full p-2 placeholder:text-xl'
-                  placeholder='Specialist At:'
-                /> */}
-                <select name="type" id="" className='h-full w-full'>
+                <select 
+                  name="type" 
+                  className='h-full w-full' 
+                  onChange={(e) => setDoctorDetails({ ...doctorDetails, specialistAt: e.target.value })}
+                >
                   <option value="">Specialist At...</option>
-                  <option value="name">General Physician</option>
-                  <option value="name">Darma</option>
-                  <option value="name">Nurologic</option>
+                  <option value="Dermatology">Dermatology</option>
+                  <option value="DietNutrition">DietNutrition</option>
+                  <option value="General Physician">General Physician</option>
+                  <option value="Gynecologic">Gynecologic</option>
+                  <option value="Nurologic">Nurologic</option>
+                  <option value="Pathology">Pathology</option>
+                  <option value="Pediatric">Pediatric</option>
+                  <option value="PlasticSurgery">PlasticSurgery</option>
+                  <option value="Psychiatric">Psychiatric</option>
+                  <option value="Renal">Renal</option>
+                  <option value="Urologic">Urologic</option>
                 </select>
               </div>
 
@@ -218,6 +316,7 @@ function HospitalDashboard() {
                   type="text" 
                   className='w-full h-full p-2 placeholder:text-sm'
                   placeholder='Time: 9:00am - 5:00pm'
+                  onChange={(e) => setDoctorDetails({ ...doctorDetails, time: e.target.value })}
                 />
               </div>
               <div className={styles.small_input_box}>
@@ -225,23 +324,38 @@ function HospitalDashboard() {
                   type="text" 
                   className='w-full h-full p-2 placeholder:text-lg'
                   placeholder='Day: Mon - Fri'
+                  onChange={(e) => setDoctorDetails({ ...doctorDetails, day: e.target.value })}
                 />
               </div>
             </div>
             
             <div className={styles.input_bg}>
-              <Link href={"/components/DoctorDetails"} className={styles.signup}>
+              <button className={styles.signup} onClick={handleAddDoctor}>
                 <span>{`Add Doctor +`}</span>
-              </Link>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
       <div className="w-8/12 mb-20 mt-10">
-        <DoctorDetailsCard />
-        <DoctorDetailsCard />
-        <DoctorDetailsCard />
+        {
+          hospitalDetails.allDoctors?.doctors.map((i: any) => {
+            return (
+              <DoctorDetailsCard 
+                key={i?._id}
+                name={i?.name}
+                image={i?.image}
+                email={i?.email}
+                walletAddress={i?.walletAddress}
+                description={i?.description}
+                specialistAt={i?.specialistAt}
+                day={i?.availableDate}
+                time={i?.availableTime}
+              />
+            )
+          })
+        }
       </div>
     </div>
   )
