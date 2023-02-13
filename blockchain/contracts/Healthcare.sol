@@ -30,9 +30,13 @@ contract Healthcare {
 
     // Owner address
     address public owner;
+    // Hospital address
+    // address public Hospital;
 
     // approveHospitalAddress[_hospitalAddress] = true / false
     mapping(address => bool) private approveHospitalAddress;
+    // getMyHospital[_doctorAddress] = [_hospitalAddress]
+    mapping(address => address) private getMyHospital;
     // approveDoctorAddress[_doctorAddress] = true / fasle
     mapping(address => bool) private approveDoctorAddress;
     // approvePatient[_patientAddress] = true / false
@@ -52,6 +56,16 @@ contract Healthcare {
         owner = msg.sender;
     }
 
+    // modifier onlyHospital {
+    //     require(msg.sender == Hospital);
+    //     _;
+    // }
+
+    // modifier onlyOwner {
+    //     require(msg.sender == owner);
+    //     _;
+    // }
+
     function makeThisAddressHospital() public {
         require(approveHospitalAddress[msg.sender] == false, "Already approved");
         approveHospitalAddress[msg.sender] = true;
@@ -66,7 +80,12 @@ contract Healthcare {
         require(approveHospitalAddress[msg.sender] == true, "Not Hospital");
         approveDoctorAddress[_doctor] = true;
         allDoctors[msg.sender].push(_doctor);
+        getMyHospital[_doctor] = msg.sender;
         emit DoctorApproved(_doctor);
+    }
+
+    function showMyHospital() public view returns(address) {
+        return getMyHospital[msg.sender];
     }
 
     function showAllDoctors() public view returns(address[] memory) {
