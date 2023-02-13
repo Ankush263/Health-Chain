@@ -42,7 +42,7 @@ const doctorSchema = new mongoose.Schema({
       },
       availableDate: {
         type: String,
-        required: [true, "must provide available time"]
+        required: [true, "must provide available date"]
       }
     }
   ]
@@ -80,184 +80,15 @@ const hospitalSchema = new mongoose.Schema({
     type: [String],
     required: [true, "must provide teliphone number"]
   },
-  lat: {
-    type: String,
-    // required: [true, "must provide lat"]
-  },
-  lng: {
-    type: String,
-    // required: [true, "must provide lng"]
-  },
-  availableService: {
-    medicalProcidure: {
-      type: Boolean,
-      default: false
-    },
-    medicalTest: {
-      type: Boolean,
-      default: false
-    },
-    medicalTherapy: {
-      type: Boolean,
-      default: false
-    }
-  },
-  Anesthesia: {
-    type: Boolean,
-    default: false
-  },
-  AnesthesiaDoctor: {
-    type: doctorSchema,
-    validate: function() {
-      return this.Anesthesia
-    }
-  },
-  Dentistry: {
-    type: Boolean,
-    default: false
-  },
-  DentistryDoctor: {
-    type: doctorSchema,
-    validate: function() {
-      return this.Dentistry
-    }
-  },
-  Dermatology: {
-    type: Boolean,
-    default: false
-  },
-  DermatologyDoctor: {
-    type: doctorSchema,
-    validate: function() {
-      return this.Dermatology
-    }
-  },
-  DietNutrition: {
-    type: Boolean,
-    default: false
-  },
-  DietNutritionDoctor: {
-    type: doctorSchema,
-    validate: function() {
-      return this.DietNutrition
-    }
-  },
-  Emergency: {
-    type: Boolean,
-    default: false
-  },
-  EmergencyDoctor: {
-    type: doctorSchema,
-    validate: function() {
-      return this.Emergency
-    }
-  },
-  Gynecologic: {
-    type: Boolean,
-    default: false
-  },
-  GynecologicDoctor: {
-    type: doctorSchema,
-    validate: function() {
-      return this.Gynecologic
-    }
-  },
-  Neurologic: {
-    type: Boolean,
-    default: false
-  },
-  NeurologicDoctor: {
-    type: doctorSchema,
-    validate: function() {
-      return this.Neurologic
-    }
-  },
-  Pathology: {
-    type: Boolean,
-    default: false
-  },
-  PathologyDoctor: {
-    type: doctorSchema,
-    validate: function() {
-      return this.Pathology
-    }
-  },
-  Pediatric: {
-    type: Boolean,
-    default: false
-  },
-  PediatricDoctor: {
-    type: doctorSchema,
-    validate: function() {
-      return this.Pediatric
-    }
-  },
-  PlasticSurgery: {
-    type: Boolean,
-    default: false
-  },
-  PlasticSurgeryDoctor: {
-    type: doctorSchema,
-    validate: function() {
-      return this.PlasticSurgery
-    }
-  },
-  Psychiatric: {
-    type: Boolean,
-    default: false
-  },
-  PsychiatricDoctor: {
-    type: doctorSchema,
-    validate: function() {
-      return this.Psychiatric
-    }
-  },
-  Renal: {
-    type: Boolean,
-    default: false
-  },
-  RenalDoctor: {
-    type: doctorSchema,
-    validate: function() {
-      return this.Renal
-    }
-  },
-  Surgical: {
-    type: Boolean,
-    default: false
-  },
-  SurgicalDoctor: {
-    type: doctorSchema,
-    validate: function() {
-      return this.Surgical
-    }
-  },
-  Toxicologic: {
-    type: Boolean,
-    default: false
-  },
-  ToxicologicDoctor: {
-    type: doctorSchema,
-    validate: function() {
-      return this.Toxicologic
-    }
-  },
-  Urologic: {
-    type: Boolean,
-    default: false
-  },
-  UrologicDoctor: {
-    type: doctorSchema,
-    validate: function() {
-      return this.Urologic
-    }
+  allDoctors: {
+    type: doctorSchema
   },
   openingHours: {
     type: String,
-    required: [true, "must provide opening hours"]
+    // required: [true, "must provide opening hours"]
   }
 })
 
-const Hospital2 = mongoose.model("Hospital", hospitalSchema)
+const Hospital = mongoose.model("Hospital", hospitalSchema)
 
-module.exports = Hospital2
+module.exports = Hospital
