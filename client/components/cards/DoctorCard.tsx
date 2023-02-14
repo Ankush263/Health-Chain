@@ -1,17 +1,32 @@
 import React, { useState } from 'react';
 import BookingPopup from './BookingPopup';
 import Swal from 'sweetalert2';
+import jwt from 'jwt-decode';
+import { createBooking } from '../../Api';
+import { ethers } from 'ethers';
 
-function DoctorCard() {
+function DoctorCard(props: any) {
   const [booked, setBooked] = useState(false)
-  const [bookingEvent, setBookingEvent] = useState({
+  const [bookingDetails, setBookingDetails] = useState({
+    doctorId: '',
+    patientId: '',
+    patientAddress: '',
     date: '',
     time: ''
   })
 
-  const handleBooking = () => {
+  let provider: any
+  let signer: any
+  if(typeof window !== 'undefined') {
+    provider = new ethers.providers.Web3Provider(window.ethereum)
+    signer = provider.getSigner()
+  }
+
+  const handleBooking = async () => {
     try{
-      // setBookingStart(prev => !prev)
+      const token = JSON.parse(localStorage.getItem("Token") || '{}').value
+      let decodedToken = {} as any
+      decodedToken = jwt(token)
 
       Swal.fire({
         title: 'Booking Form',
@@ -27,18 +42,43 @@ function DoctorCard() {
           }
           return { date: date, time: time }
         }
-      }).then((result: any) => {
+      }).then(async (result: any) => {
+        console.log("Clicked")
+        setBookingDetails(
+          { 
+            doctorId: props.id, 
+            patientId: decodedToken.id, 
+            patientAddress: await signer.getAddress(),
+            date: result.value?.date, 
+            time: result.value?.time 
+          }
+        )
         Swal.fire(`
           Time: ${result.value?.date}
           Date: ${result.value?.time}
         `.trim())
-        setBookingEvent({ date: result.value?.date, time: result.value?.time })
       })
-
-      setBooked(true)
+      setBooked(prev => !prev)
 
     }catch(err) {
       console.log(err)
+    }
+  }
+
+  const book = async () => {
+    try {
+      console.log("booking Details: ", bookingDetails)
+      const response = await createBooking({
+        doctorID: bookingDetails.doctorId,
+        patientID: bookingDetails.patientId,
+        patientAddress: bookingDetails.patientAddress,
+        bookingTime: bookingDetails.time,
+        bookingDate: bookingDetails.date
+      })
+      console.log(response)
+      setBooked(prev => !prev)
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -48,6 +88,7 @@ function DoctorCard() {
     doc_detail_container: `h-full w-6/12 flex flex-col justify-center items-start`,
     btn_container: `h-full w-3/12 flex flex-col justify-around items-center`,
     yellow_btn: `w-6/12 h-10 bg-grinish-yellow border-2 drop-shadow-2xl active:mt-1 active:drop-shadow-xl`,
+    green_btn: `w-6/12 h-10 bg-deep_green border-2 drop-shadow-2xl active:mt-1 active:drop-shadow-xl`,
     blue_btn: `w-6/12 h-10 bg-ocen_blue border-2 drop-shadow-2xl active:mt-1 active:drop-shadow-xl`,
     semibold_txt: `font-semibold text-lg`,
     popup_box: `border-2 w-96 h-96 bg-ocen_blue absolute z-10 left-40 right-0 bottom-0 `
@@ -56,23 +97,30 @@ function DoctorCard() {
     <div>
       <div className={styles.doc_container}>
           <div className={styles.sm_img_container}>
-            <img src="/images/my_img.jpg" alt="" className='w-full h-full rounded-full' />
+            <img src={`${props.image}`} alt="" className='w-full h-full rounded-full' />
           </div>
           <div className={styles.doc_detail_container}>
-            <span className={styles.semibold_txt}>Dr. Ankush Banik</span>
-            <span>M.B.B.S General Physician, US ABC ueueu</span>
-            <span>General Physician</span>
-            <span>Mon-Fri 10:00am - 5:00 pm</span>
+            <span className={styles.semibold_txt}>{props.name}</span>
+            <span>{props.description}</span>
+            <span>{props.specialistAt}</span>
+            <span>{props.day} {props.time}</span>
           </div>
           <div className={styles.btn_container}>
             {
-              // !booked ?
+              !booked ?
+              <button className={styles.yellow_btn} onClick={handleBooking}>
+                <span className='text-xl'>{"Book Now"}</span>
+              </button>
+              :
+              <button className={styles.green_btn} onClick={book}>
+                <span className='text-xl'>{"Book"}</span>
+              </button>
             }
-            <button className={styles.yellow_btn} onClick={handleBooking}>
-              <span className='text-xl'>Book Now</span>
-            </button>
+            {/* <button className={styles.yellow_btn} onClick={handleBooking}>
+              <span className='text-xl'>{"Book Now"}</span>
+            </button> */}
             {
-              // bookingStart &&
+              // !booked &&
               // <div className={styles.popup_box}>
               //   <BookingPopup />
               // </div>
