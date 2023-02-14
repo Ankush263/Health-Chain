@@ -11,7 +11,7 @@ function HospitalCard(props: any) {
   return (
     <div className={styles.main_container}>
       <div className={styles.img_container}>
-        <img src="/images/hospital.png" alt="" className='w-full h-full border-2' />
+        <img src={`${props.image}`} alt="" className='w-full h-full border-2' />
       </div>
       <div className={styles.name_container}>
         <span>{props.name}</span>
