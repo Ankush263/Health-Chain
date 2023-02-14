@@ -19,3 +19,9 @@ export const getDoctorByWalletAddress = (_id: any, _walletAddress: any) => HOSPI
 // ----------ALL PATIENT FUNCTIONS----------
 export const signup = (_signupDetails: any) => PATIENT_API.post('/signup', _signupDetails)
 export const login = (_loginDetails: any) => PATIENT_API.post('/login', _loginDetails)
+export const getSinglePatient = (_patientId: any) => PATIENT_API.get(`/${_patientId}`)
+
+// ----------ALL BOOKING FUNCTIONS----------
+export const createBooking = (_bookingDetails: any) => BOOKING_API.post(`/`, _bookingDetails)
+export const getBookingByDoctorId = (_doctorId: any) => BOOKING_API.get(`/?doctorID=${_doctorId}`)
+export const deleteBooking = (_bookingId: any) => BOOKING_API.delete(`/${_bookingId}`)
