@@ -10,6 +10,10 @@ const bookingSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Patient"
   },
+  patientAddress: {
+    type: String,
+    required: [true, "must provide patient wallet address"]
+  },
   bookingTime: {
     type: String,
     required: [true, "must provide booking time"]
