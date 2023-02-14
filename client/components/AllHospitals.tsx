@@ -71,26 +71,11 @@ function AllHospitals() {
                     query: {data: hospital._id}
                   }}
                 >
-                  <HospitalCard name={hospital.name} />
+                  <HospitalCard name={hospital.name} image={hospital.image} />
                 </Link>
               )
             })
           }   
-
-          {/* <Link href="/components/HospitalDetails">
-            <HospitalCard />
-          </Link>
-          <div onClick={handleClick}>
-            
-          <HospitalCard />
-          </div>
-          <HospitalCard />
-          <HospitalCard />
-          <HospitalCard />
-          <HospitalCard />
-          <HospitalCard />
-          <HospitalCard />
-          <HospitalCard /> */}
         </div>
       </div>
     </div>
