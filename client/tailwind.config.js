@@ -28,7 +28,9 @@ module.exports = {
       'light-sky': '#01E1FF',
       'white': '#FFFFFF',
       'ocen_blue': '#0099FF',
-      'parrot_green': '#00FF29'
+      'parrot_green': '#00FF29',
+      'error_red': '#f70c0c',
+      'deep_green': '#21fc12'
     }
   },
   plugins: [],
