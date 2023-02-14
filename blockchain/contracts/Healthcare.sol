@@ -47,6 +47,8 @@ contract Healthcare {
     mapping(address => mapping(string => Report)) private reportByAddressAndName;
     // reportsByAddress[_patientAddress] = [Report]
     mapping(address => Report[]) private reportsByAddress;
+    // addedPatient[_doctorAddress] = [_patientAddress]
+    mapping(address => address[]) private myAddedPatient;
     // allPatients[_doctoraddress] = [_patientAddress]
     mapping(address => address[]) private allPatients;
     
@@ -55,16 +57,6 @@ contract Healthcare {
     constructor() {
         owner = msg.sender;
     }
-
-    // modifier onlyHospital {
-    //     require(msg.sender == Hospital);
-    //     _;
-    // }
-
-    // modifier onlyOwner {
-    //     require(msg.sender == owner);
-    //     _;
-    // }
 
     function makeThisAddressHospital() public {
         require(approveHospitalAddress[msg.sender] == false, "Already approved");
@@ -104,6 +96,7 @@ contract Healthcare {
         Patient memory tempPatient;
         tempPatient.info = _info;
         tempPatient.patientAddress = _address;
+        myAddedPatient[msg.sender].push(_address);
 
         approvePatient[_address] = true;
         patients.push(tempPatient);
@@ -144,6 +137,10 @@ contract Healthcare {
     function getPatientReportByName(string memory _name, address _patient) public view returns(Report memory) {
         require(approveDoctorAddress[msg.sender] == true, "Doctor not approved");
         return reportByAddressAndName[_patient][_name];
+    }
+
+    function getAllMyAddedPatient() public view returns(address[] memory) {
+        return myAddedPatient[msg.sender];
     }
 
     function getAllMyPatients() public view returns(address[] memory) {
