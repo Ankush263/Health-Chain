@@ -5,8 +5,7 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 export const uploadJSONToIPFS = async(JSONBody: {
-        title: string; desc: string; price: number; stock: number; img: string; //           id: 'FRA1',
-        image: string;
+        name: String, email: String, age: String, gender: String, id: String, walletAddress: String
     }) => {
     const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
     //making axios POST request to Pinata ⬇️
