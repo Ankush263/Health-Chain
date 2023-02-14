@@ -1,19 +1,42 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import DoctorCard from '../../components/cards/DoctorCard';
 import { useRouter } from 'next/router';
 import { getSingleHospitalById } from '../../Api';
+import Swal from 'sweetalert2';
 
 function HospitalDetails() {
   const router = useRouter()
+  const [hospitalDetails, setHospitalDetails] = useState({
+    name: '',
+    image: '',
+    description: '',
+    location: '',
+    phone: '',
+    allDoctors: {
+      doctors: []
+    }
+  })
 
   const fetch = async () => {
     try {
       const response = await getSingleHospitalById(router.query.data)
-      console.log(response)
-    } catch (error) {
+      const hospital = response.data.data.hospital[0]
+      setHospitalDetails(
+        { 
+          name: hospital.name, 
+          image: hospital.image, 
+          description: hospital.description, 
+          location: hospital.location, 
+          phone: hospital.telephone ,
+          allDoctors: hospital.allDoctors
+        }
+      )
+      
+    } catch (error: any) {
       console.log(error)
     }
   }
+
 
   useEffect(() => {
     fetch()
@@ -34,39 +57,43 @@ function HospitalDetails() {
     search_area: `border-2 w-6/12 h-10 flex drop-shadow-2xl mb-5 mt-40`,
     sub_box: `w-3/12 bg-white`,
     btn: `w-3/12 bg-high_contrast_yellow border-l-2 active:bg-grinish-yellow`,
+    err_btn: `border-2 h-12 bg-error_red drop-shadow-2.5xl flex justify-center items-center text-white p-5 pl-5 pr-5 active:mt-2 active:drop-shadow-2xl`
   }
   return (
     <div className={styles.main}>
       <div className={styles.top_container}>
         <div className={styles.top_left_container}>
           <div className={styles.img_container}>
-            <img 
-              src="/images/hospital.png" 
-              alt="" 
-              className='drop-shadow-2.5xl border-4' 
-              onClick={() => console.log(router)}
-            />
+            {
+              !hospitalDetails.image ? 
+              <button className={styles.err_btn} onClick={fetch}>
+                <span>Click Here For Reload</span> 
+              </button>
+              :
+              <img 
+                src={`${hospitalDetails.image}`}
+                alt="" 
+                className='drop-shadow-2.5xl border-4' 
+                onClick={() => console.log(hospitalDetails.allDoctors?.doctors)}
+              />
+            }
           </div>
           <div className={styles.name_container}>
-            <span className={styles.semibold_txt}>ABC HOSPITAL</span>
+            <span className={styles.semibold_txt}>{hospitalDetails.name}</span>
           </div>
         </div>
         <div className={styles.top_right_container}>
           <div className={styles.about_container}>
             <span className={styles.semibold_txt}>About:</span>
-            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est repellat repudiandae consequuntur, numquam impedit beatae iste commodi expedita ipsum atque doloribus vitae saepe temporibus possimus quibusdam quod hic quaerat natus dicta sit tenetur. Nesciunt magnam culpa deserunt officia, nostrum animi vitae natus officiis necessitatibus cumque facere quia consequuntur eos repellat!</span>
+            <span>{hospitalDetails.description}</span>
           </div>
           <div className={styles.location_container}>
             <span className={styles.semibold_txt}>Location:</span>
-            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est repellat repudiandae consequuntur, numquam impedit beatae iste commod</span>
+            <span>{hospitalDetails.location}</span>
           </div>
           <div className={styles.phone_container}>
             <span className={styles.semibold_txt}>Phone:</span>
-            <span>+2464646264</span>
-            <span>+2464646264</span>
-            <span>+2464646264</span>
-            <span>+2464646264</span>
-            <span>+2464646264</span>
+            <span>{hospitalDetails.phone}</span>
           </div>
         </div>
       </div>
@@ -89,10 +116,22 @@ function HospitalDetails() {
       </div>
 
       <div className={styles.bottom_container}>
-        <DoctorCard />
-        <DoctorCard />
-        <DoctorCard />
-        <DoctorCard />
+        {
+          hospitalDetails.allDoctors?.doctors.map((i: any) => {
+            return (
+              <DoctorCard
+                key={i._id}
+                id={i._id}
+                name={i.name}
+                image={i.image}
+                description={i.description}
+                specialistAt={i.specialistAt}
+                day={i.availableDate}
+                time={i.availableTime}
+              />
+            )
+          })
+        }
       </div>
     </div>
   )
