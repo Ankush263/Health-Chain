@@ -4,11 +4,21 @@ import NotificationCard from '../../components/cards/NotificationCard';
 import PatientCard from '../../components/cards/PatientCard';
 import { ethers } from 'ethers';
 import ABI from "../../utils/Healthcare.json"
-import { getDoctorByWalletAddress, getHospitalByWalletAddress } from '../../Api';
+import { 
+  getDoctorByWalletAddress, 
+  getHospitalByWalletAddress, 
+  getBookingByDoctorId 
+} from '../../Api';
 
 function DoctorDetails() {
   const [filename, setFilename] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const [doctorDetails, setDoctorDetails] = useState({
+    name: '',
+    description: '',
+    image: ''
+  })
+  const [bookingDetails, setBookingDetails] = useState([])
 
   const deployAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
   let provider: any
@@ -23,11 +33,18 @@ function DoctorDetails() {
     try {
       const contract = new ethers.Contract(deployAddress, ABI.abi, signer)
       const hospitalAddress = await contract.showMyHospital()
+      const address = await signer.getAddress()
       const hospitalResponse = await getHospitalByWalletAddress(hospitalAddress)
       const id = hospitalResponse.data.data.hospital[0]._id
-      const doctor = await getDoctorByWalletAddress(id, hospitalAddress)
-      console.log("Hospital Id is: ", id)
-      console.log("doctor is: ", doctor)
+      const doctorAbout = await getDoctorByWalletAddress(id, address)
+      const doctor = doctorAbout.data.data.doctor
+      const booking = await getBookingByDoctorId(doctorAbout.data.data.doctor._id)
+      const allMyPatient = await contract.getAllMyAddedPatient()
+      setDoctorDetails({ name: doctor.name, description: doctor.description, image: doctor.image })
+      setBookingDetails(booking.data.data.booking)
+      // console.log("doctor is: ", doctorAbout.data.data.doctor)
+      // console.log("booking: ", booking.data.data.booking)
+      console.log("allMyPatient: ", allMyPatient)
     } catch (error) {
       console.log(error)
     }
@@ -59,28 +76,34 @@ function DoctorDetails() {
       <div className={styles.upper}>
         <div className={styles.left_container}>
           <div className={styles.img_container}>
-            <img src="/images/unnamed.png" alt="" className='w-full h-full' onClick={fetch}  />
+            <img src={`${doctorDetails.image}`} alt="" className='w-full h-full' onClick={() => console.log("bookingDetails: ", bookingDetails)}  />
           </div>
           <div className={styles.txt_container}>
           <div className={styles.name_container}>
-            <span>Dr. ABC Dev Roy</span>
+            <span>{doctorDetails.name}</span>
           </div>
           </div>
           <div className={styles.btn_container}>
             <div className={styles.btn_bg}>
-              <span>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Debitis placeat distinctio suscipit laudantium voluptate asperiores velit repellat odit, aspernatur ipsa?</span>
+              <span>{doctorDetails.description}</span>
             </div>
           </div>
         </div>
         <div className={styles.right_container}>
           <div className={styles.main_box}>
-            <NotificationCard />
-            <NotificationCard />
-            <NotificationCard />
-            <NotificationCard />
-            <NotificationCard />
-            <NotificationCard />
-            <NotificationCard />
+            {
+              bookingDetails.map((i: any) => {
+                return (
+                  <NotificationCard 
+                    key={i._id}
+                    bookingId={i._id}
+                    id={i.patientID}
+                    date={i.bookingDate}
+                    time={i.bookingTime}
+                  />
+                )
+              })
+            }
           </div>
         </div>
       </div>
