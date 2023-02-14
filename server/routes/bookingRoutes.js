@@ -16,7 +16,7 @@ const router = express.Router()
 
 router
   .route("/")
-    .post(protect, createBooking)
+    .post(createBooking)
     .get(getBookings)
 
 router
