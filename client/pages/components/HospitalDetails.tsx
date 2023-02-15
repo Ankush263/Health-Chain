@@ -128,6 +128,7 @@ function HospitalDetails() {
                 specialistAt={i.specialistAt}
                 day={i.availableDate}
                 time={i.availableTime}
+                walletAddress={i.walletAddress}
               />
             )
           })
