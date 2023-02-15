@@ -51,7 +51,8 @@ contract Healthcare {
     mapping(address => address[]) private myAddedPatient;
     // allPatients[_doctoraddress] = [_patientAddress]
     mapping(address => address[]) private allPatients;
-    
+    // reportsByDoctor[_doctorAddress] = [Report]
+    mapping(address => Report[]) private reportByDoctor;
 
 
     constructor() {
@@ -123,6 +124,7 @@ contract Healthcare {
         
         allPatients[msg.sender].push(_patient);
         reportsByAddress[_patient].push(tempReport);
+        reportByDoctor[msg.sender].push(tempReport);
         reports.push(tempReport);
     }
 
@@ -137,6 +139,10 @@ contract Healthcare {
     function getPatientReportByName(string memory _name, address _patient) public view returns(Report memory) {
         require(approveDoctorAddress[msg.sender] == true, "Doctor not approved");
         return reportByAddressAndName[_patient][_name];
+    }
+
+    function getReportByDoctorAddress(address _address) public view returns(Report[] memory) {
+        return reportByDoctor[_address];
     }
 
     function getAllMyAddedPatient() public view returns(address[] memory) {
