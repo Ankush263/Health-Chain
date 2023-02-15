@@ -4,8 +4,10 @@ import { ethers } from 'ethers';
 import ABI from '../../utils/Healthcare.json';
 import { uploadJSONToIPFS } from '../../Api/pinata';
 import { deleteBooking } from '../../Api';
+import Swal from 'sweetalert2';
 
 function NotificationCard(props: any) {
+  const [addClick, setAddClick] = useState(false)
   const [patientDetails, setPatientDetails] = useState({
     name: '',
     email: '',
@@ -62,12 +64,21 @@ function NotificationCard(props: any) {
 
   const addPatient = async () => {
     try {
+      setAddClick(prev => !prev)
       const contract = new ethers.Contract(deployAddress, ABI.abi, signer)
       const patientJSON = await uploadMetadataToIPFS()
       const deleteBook = await deleteBooking(props.bookingId)
       const add = await contract.addPatient(patientDetails, patientDetails.walletAddress)
-      console.log("Add response: ", add)
-      console.log("deleteBook response: ", deleteBook)
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'You Successfully add your Patient',
+        showConfirmButton: false,
+        timer: 1500
+      })
+      window.location.replace("/components/AddHospital")
+      console.log("id: ", props.bookingId)
+      console.log("address: ", patientDetails.walletAddress)
     } catch (error) {
       console.log(error)
     }
@@ -97,7 +108,7 @@ function NotificationCard(props: any) {
           <span className='font-semibold text-sm'>Booking Date: {props.date}</span>
         </div>
         <div className={styles.right_container}>
-          <button className={styles.btn} onClick={addPatient}>{"Add +"}</button>
+          <button className={styles.btn} onClick={addPatient}>{addClick ? "Adding..." : "Add +"}</button>
         </div>
       </div>
     </div>
