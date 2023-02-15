@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import BookingPopup from './BookingPopup';
 import Swal from 'sweetalert2';
 import jwt from 'jwt-decode';
 import { createBooking } from '../../Api';
 import { ethers } from 'ethers';
+import ABI from '../../utils/Healthcare.json'
 
 function DoctorCard(props: any) {
   const [booked, setBooked] = useState(false)
@@ -15,6 +15,7 @@ function DoctorCard(props: any) {
     time: ''
   })
 
+  const deployAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
   let provider: any
   let signer: any
   if(typeof window !== 'undefined') {
@@ -77,6 +78,47 @@ function DoctorCard(props: any) {
       })
       console.log(response)
       setBooked(prev => !prev)
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'You Successfully book your slot',
+        showConfirmButton: false,
+        timer: 1500
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const show = async () => {
+    try {
+      const contract = new ethers.Contract(deployAddress, ABI.abi, signer)
+      // const response = await contract.showMyReports()
+      const response = await contract.getReportByDoctorAddress(props.walletAddress)
+      console.log(props.walletAddress)
+      response.map((res: any) => console.log("res: ", res[1]))
+      console.log(response)
+      response.map((res: any) => {
+        console.log('Mapping: ', res)
+        if(res[3] == props.walletAddress) {
+          Swal.fire({
+            html: `<a href=${res[1]} target=”_blank”>Click here to see -> ${res[0]}</a>`
+          })
+          console.log(res[1])
+          // alert(res[1])
+        }
+        else {
+          console.log("Different")
+          Swal.fire(
+            'No Report!',
+            `Doctor doesn't give you any report`,
+            'info'
+          )
+        }
+
+      })
+      // console.log("All My Reports are: ", response[0][3])
+      // console.log("Doctor: ", props.walletAddress)
     } catch (error) {
       console.log(error)
     }
@@ -116,18 +158,7 @@ function DoctorCard(props: any) {
                 <span className='text-xl'>{"Book"}</span>
               </button>
             }
-            {/* <button className={styles.yellow_btn} onClick={handleBooking}>
-              <span className='text-xl'>{"Book Now"}</span>
-            </button> */}
-            {
-              // !booked &&
-              // <div className={styles.popup_box}>
-              //   <BookingPopup />
-              // </div>
-
-              
-            }
-            <button className={styles.blue_btn}>
+            <button className={styles.blue_btn} onClick={show}>
               <span className='text-xl'>Show report</span>
             </button>
           </div>
