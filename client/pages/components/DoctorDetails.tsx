@@ -12,6 +12,7 @@ import {
 
 function DoctorDetails() {
   const [filename, setFilename] = useState('');
+  const [myPatients, setMyPatients] = useState([])
   const inputRef = useRef<HTMLInputElement>(null);
   const [doctorDetails, setDoctorDetails] = useState({
     name: '',
@@ -40,6 +41,7 @@ function DoctorDetails() {
       const doctor = doctorAbout.data.data.doctor
       const booking = await getBookingByDoctorId(doctorAbout.data.data.doctor._id)
       const allMyPatient = await contract.getAllMyAddedPatient()
+      setMyPatients(allMyPatient)
       setDoctorDetails({ name: doctor.name, description: doctor.description, image: doctor.image })
       setBookingDetails(booking.data.data.booking)
       // console.log("doctor is: ", doctorAbout.data.data.doctor)
@@ -76,7 +78,7 @@ function DoctorDetails() {
       <div className={styles.upper}>
         <div className={styles.left_container}>
           <div className={styles.img_container}>
-            <img src={`${doctorDetails.image}`} alt="" className='w-full h-full' onClick={() => console.log("bookingDetails: ", bookingDetails)}  />
+            <img src={`${doctorDetails.image}`} alt="" className='w-full h-full' onClick={fetch}  />
           </div>
           <div className={styles.txt_container}>
           <div className={styles.name_container}>
@@ -108,9 +110,16 @@ function DoctorDetails() {
         </div>
       </div>
       <div className={styles.lower}>
-        <PatientCard />
-        <PatientCard />
-        <PatientCard />
+        {
+          myPatients.map((i: any) => {
+            return (
+              <PatientCard
+               key={i}
+               walletAddress={i}
+              />
+            )
+          })
+        }
       </div>
     </div>
   )
