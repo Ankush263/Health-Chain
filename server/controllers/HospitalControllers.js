@@ -60,7 +60,6 @@ exports.findDoctor = catchAsync(async (req, res, next) => {
   )
 
   const doctor = hospital?.allDoctors.doctors.find(doctor => doctor.walletAddress === req.params.walletAddress)
-  console.log(hospital)
   res.status(200).json({
     status: "Success",
     data: {
