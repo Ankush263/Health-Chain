@@ -20,6 +20,7 @@ export const getDoctorByWalletAddress = (_id: any, _walletAddress: any) => HOSPI
 export const signup = (_signupDetails: any) => PATIENT_API.post('/signup', _signupDetails)
 export const login = (_loginDetails: any) => PATIENT_API.post('/login', _loginDetails)
 export const getSinglePatient = (_patientId: any) => PATIENT_API.get(`/${_patientId}`)
+export const getSinglePatientByWalletAddress = (_address: any) => PATIENT_API.get(`/?walletAddress=${_address}`)
 
 // ----------ALL BOOKING FUNCTIONS----------
 export const createBooking = (_bookingDetails: any) => BOOKING_API.post(`/`, _bookingDetails)
