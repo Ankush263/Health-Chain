@@ -1,4 +1,21 @@
-import React from 'react'
+import React from 'react';
+import { GetStaticProps } from 'next';
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  return {
+    revalidate: 5,
+    props: {
+      name: '',
+      image: '',
+      email: '',
+      walletAddress: '',
+      description: '',
+      specialistAt: '',
+      day: '',
+      time: ''
+    }
+  }
+}
 
 function DoctorDetailsCard(props: any) {
 
