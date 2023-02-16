@@ -1,4 +1,15 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
+import { GetStaticProps } from 'next';
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  return {
+    revalidate: 5,
+    props: {
+      name: '',
+      image: ''
+    }
+  }
+}
 
 function HospitalCard(props: any) {
 
