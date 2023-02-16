@@ -5,6 +5,19 @@ import ABI from '../../utils/Healthcare.json';
 import { uploadJSONToIPFS } from '../../Api/pinata';
 import { deleteBooking } from '../../Api';
 import Swal from 'sweetalert2';
+import { GetStaticProps } from 'next';
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  return {
+    revalidate: 5,
+    props: {
+      id: '',
+      bookingId: '',
+      time: '',
+      date: ''
+    }
+  }
+}
 
 function NotificationCard(props: any) {
   const [addClick, setAddClick] = useState(false)
