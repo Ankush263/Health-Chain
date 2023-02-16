@@ -44,8 +44,6 @@ function DoctorDetails() {
       setMyPatients(allMyPatient)
       setDoctorDetails({ name: doctor.name, description: doctor.description, image: doctor.image })
       setBookingDetails(booking.data.data.booking)
-      // console.log("doctor is: ", doctorAbout.data.data.doctor)
-      // console.log("booking: ", booking.data.data.booking)
       console.log("allMyPatient: ", allMyPatient)
     } catch (error) {
       console.log(error)
