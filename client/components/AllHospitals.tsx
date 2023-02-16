@@ -6,18 +6,6 @@ import { getAllHospitals } from '../Api';
 function AllHospitals() {
   const [allHospitals, setAllHospitals] = useState([])
 
-  // const data = {
-  //   _id: 
-  // }
-
-  const handleClick = async () => {
-    try {
-      console.log(await getAllHospitals())
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   const fetch = async () => {
     try {
       const response = await getAllHospitals()
