@@ -22,6 +22,10 @@ function FontPage() {
     }
   }
 
+  useEffect(() => {
+    handleConnect()
+  }, [])
+
   const styles = {
     main: `w-full min-h-screen flex flex-col`,
     animation_box: `w-8/12 flex justify-center items-center mt-10 p-0 border-4 h-48 ml-10 bg-white drop-shadow-3xl`,
