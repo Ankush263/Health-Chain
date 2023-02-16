@@ -163,15 +163,13 @@ function AddHospital() {
               `Revolutionizing Healthcare through the integration of Hospitals and Blockchain technology, creating a secure and efficient system for all`,
               1000
               ]}
-              speed={70} // Custom Speed from 1-99 - Default Speed: 40
-              // style={{ fontSize: '2em' }}
+              speed={70}
               deletionSpeed={99}
               className={styles.txt}
-              wrapper="span" // Animation will be rendered as a <span>
-              repeat={Infinity} // Repeat this Animation Sequence infinitely
+              wrapper="span"
+              repeat={Infinity}
             />
-          {/* <span className={styles.txt_up}>{`Let's fix the Healthcare sectors`}</span>
-          <span className={styles.txt}>{`by adding Hospitals into Blockchain`}</span> */}
+          
         </div>
         <div className={styles.btn_container}>
           <Link href={"/components/DoctorDetails"} className={styles.btn_bg}>
@@ -223,13 +221,6 @@ function AddHospital() {
         </div>
 
         <div className={styles.input_bg}>
-          {/* <div className={styles.l_small_input_box}>
-            <FileBase64 
-              type="file"
-              multiple={false}
-              onDone={(e: any) => setHospitalDetails({ ...hospitalDetails, image: `${e.base64}` })}
-            />
-          </div> */}
           <div className="flex items-center">
             <label className={styles.l_small_input_box}>
               <span>{uploaded ? `Uploaded` : `Upload Image`}</span>
@@ -260,11 +251,9 @@ function AddHospital() {
         </div>
         
         <div className={styles.input_bg}>
-          {/* <Link href={"/components/HospitalDashboard"} className={styles.signup}> */}
           <button className={styles.signup} onClick={handleSubmit}>
             <span>{`Add Hospital +`}</span>
           </button>
-          {/* </Link> */}
         </div>
       </div>
       </div>
