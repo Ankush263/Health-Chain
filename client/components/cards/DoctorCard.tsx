@@ -1,9 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import jwt from 'jwt-decode';
 import { createBooking } from '../../Api';
 import { ethers } from 'ethers';
-import ABI from '../../utils/Healthcare.json'
+import ABI from '../../utils/Healthcare.json';
+import { GetStaticProps } from 'next';
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  return {
+    revalidate: 5,
+    props: {
+      id: '',
+      name: '',
+      image: '',
+      description: '',
+      specialistAt: '',
+      day: '',
+      time: ''
+    }
+  }
+}
 
 function DoctorCard(props: any) {
   const [booked, setBooked] = useState(false)
@@ -14,6 +30,7 @@ function DoctorCard(props: any) {
     date: '',
     time: ''
   })
+  
 
   const deployAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
   let provider: any
@@ -22,6 +39,7 @@ function DoctorCard(props: any) {
     provider = new ethers.providers.Web3Provider(window.ethereum)
     signer = provider.getSigner()
   }
+
 
   const handleBooking = async () => {
     try{
@@ -93,32 +111,24 @@ function DoctorCard(props: any) {
   const show = async () => {
     try {
       const contract = new ethers.Contract(deployAddress, ABI.abi, signer)
-      // const response = await contract.showMyReports()
-      const response = await contract.getReportByDoctorAddress(props.walletAddress)
-      console.log(props.walletAddress)
-      response.map((res: any) => console.log("res: ", res[1]))
+      const response = await contract.showMyReports()
       console.log(response)
-      response.map((res: any) => {
-        console.log('Mapping: ', res)
-        if(res[3] == props.walletAddress) {
-          Swal.fire({
-            html: `<a href=${res[1]} target=”_blank”>Click here to see -> ${res[0]}</a>`
-          })
-          console.log(res[1])
-          // alert(res[1])
-        }
-        else {
-          console.log("Different")
-          Swal.fire(
-            'No Report!',
-            `Doctor doesn't give you any report`,
-            'info'
-          )
-        }
-
-      })
-      // console.log("All My Reports are: ", response[0][3])
-      // console.log("Doctor: ", props.walletAddress)
+      Swal.fire({
+        title: 'All Reports',
+        html: '<ul>' +
+          response.map(
+            (report: any) => 
+            `<li>
+              <span class='text-2xl text-semibold text-black'>
+                ${report.name}:
+              </span> 
+              <a href=${report.prescription} target=”_blank” class='text-ocen_blue'>
+                ${report.prescription}
+              </a>
+            </li>`).join('') +
+          '</ul>',
+        confirmButtonText: 'OK'
+      });
     } catch (error) {
       console.log(error)
     }
