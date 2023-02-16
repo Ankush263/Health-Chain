@@ -4,6 +4,16 @@ import { uploadFileToIPFS } from '../../Api/pinata';
 import Swal from 'sweetalert2';
 import { ethers } from 'ethers';
 import ABI from '../../utils/Healthcare.json';
+import { GetStaticProps } from 'next';
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  return {
+    revalidate: 5,
+    props: {
+      walletAddress: ''
+    }
+  }
+}
 
 function PatientCard(props: any) {
   const [displayFileName, setDisplayFileName] = useState('');
