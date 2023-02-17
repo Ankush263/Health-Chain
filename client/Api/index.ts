@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-const HOSPITAL_URL = `http://localhost:5000/api/v1/hospital`
-const PATIENT_URL = `http://localhost:5000/api/v1/patient`
-const BOOKING_URL = `http://localhost:5000/api/v1/booking`
+const HOSPITAL_URL = `https://healthcare-f6fj.onrender.com/api/v1/hospital`
+const PATIENT_URL = `https://healthcare-f6fj.onrender.com/api/v1/patient`
+const BOOKING_URL = `https://healthcare-f6fj.onrender.com/api/v1/booking`
 
 const HOSPITAL_API = axios.create({ baseURL: HOSPITAL_URL })
 const PATIENT_API = axios.create({ baseURL: PATIENT_URL })
