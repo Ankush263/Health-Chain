@@ -56,13 +56,13 @@ function Login() {
     try{
       
       if (typeof window !== 'undefined') {
-        // const chainId = await window.ethereum.request({ method: 'eth_chainId' })
-        // if(chainId != '0x13881') {
-        //   await window.ethereum.request({
-        //     method: 'wallet_switchEthereumChain',
-        //     params: [{ chainId: '0x13881' }],
-        //   })
-        // }
+        const chainId = await window.ethereum.request({ method: 'eth_chainId' })
+        if(chainId != '0x13881') {
+          await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x13881' }],
+          })
+        }
         await window.ethereum.request({ method: 'eth_requestAccounts' })
         setConnected(true)
         setLoginForm({...loginForm, walletAddress: await signer.getAddress()})
