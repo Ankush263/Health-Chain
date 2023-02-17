@@ -59,7 +59,7 @@ function AllHospitals() {
                     query: {data: hospital._id}
                   }}
                 >
-                  <HospitalCard name={hospital.name} image={hospital.image} />
+                  <HospitalCard key={hospital._id} name={hospital.name} image={hospital.image} />
                 </Link>
               )
             })
