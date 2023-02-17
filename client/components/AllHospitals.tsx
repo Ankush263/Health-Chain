@@ -60,7 +60,7 @@ function AllHospitals() {
                   }}
                 >
                   <HospitalCard 
-                    key={hospital._id} 
+                    key={hospital.image} 
                     name={hospital.name} 
                     image={hospital.image} 
                   />
