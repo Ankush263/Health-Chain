@@ -23,7 +23,7 @@ function AddHospital() {
     phone: ['']
   })
 
-  const deployAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  const deployAddress = "0x2a2D6a534Fab584A10A1d09BAeCF81E0977bC124"
   let provider: any
   let signer: any
   if(typeof window !== 'undefined') {
