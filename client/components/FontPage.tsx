@@ -72,7 +72,7 @@ function FontPage() {
           <div className={styles.content_box}>
             <div className={styles.img_container}>
               <div className={styles.img_box}>
-                <img src="/images/font-img2.png" alt="" className={styles.img} />
+                <img src="/images/font-img.png" alt="" className={styles.img} />
               </div>
             </div>
             <div className={styles.btn_box}>
