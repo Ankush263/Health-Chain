@@ -119,7 +119,7 @@ function Login() {
         <span onClick={() => {
           window.location.reload()
         }} className='text-sm cursor-pointer border-b-2'>
-          Don't have an account, Signup...
+          {"Don't have an account, Signup..."}
         </span>
       </div>
     </div>
