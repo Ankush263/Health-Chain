@@ -2,7 +2,8 @@ import Link from 'next/link'
 import React, { useState, useRef, useEffect } from 'react'
 import DoctorDetailsCard from '../../../components/cards/DoctorDetailsCard'
 import { useRouter } from 'next/router';
-import { getHospitalByWalletAddress, updateHospital } from '../../../Api';
+// import { getHospitalByWalletAddress, updateHospital } from '../../../Api';
+import { getHospitalByWalletAddress, updateHospital } from '../../api/index';
 import { ethers } from 'ethers';
 import { uploadFileToIPFS } from '../../../Api/pinata';
 import ABI from '../../../utils/Healthcare.json'

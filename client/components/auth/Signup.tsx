@@ -2,7 +2,8 @@ import React, { useState, useEffect, useContext } from 'react'
 import { SignupContext } from '../../Helper/Context'
 import { ethers } from 'ethers'
 import Swal from 'sweetalert2'
-import { signup } from '../../Api'
+// import { signup } from '../../Api'
+import { signup } from '../../pages/api/index'
 
 function Signup() {
   const [connected, setConnected] = useState(false)

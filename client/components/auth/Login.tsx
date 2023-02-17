@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { LoginContext } from '../../Helper/Context'
 import { ethers } from 'ethers'
-import { login } from '../../Api'
+// import { login } from '../../Api'
+import { login } from '../../pages/api/index'
 import Swal from 'sweetalert2'
 
 function Login() {

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { getSinglePatientByWalletAddress } from '../../Api';
+// import { getSinglePatientByWalletAddress } from '../../Api';
+import { getSinglePatientByWalletAddress } from '../../pages/api/index';
 import { uploadFileToIPFS } from '../../Api/pinata';
 import Swal from 'sweetalert2';
 import { ethers } from 'ethers';

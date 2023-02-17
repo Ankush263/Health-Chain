@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import jwt from 'jwt-decode';
-import { createBooking } from '../../Api';
+// import { createBooking } from '../../Api';
+import { createBooking } from '../../pages/api/index';
 import { ethers } from 'ethers';
 import ABI from '../../utils/Healthcare.json';
 import { GetStaticProps } from 'next';

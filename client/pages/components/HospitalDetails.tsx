@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import DoctorCard from '../../components/cards/DoctorCard';
 import { useRouter } from 'next/router';
-import { getSingleHospitalById } from '../../Api';
+// import { getSingleHospitalById } from '../../Api';
+import { getSingleHospitalById } from '../../pages/api/index';
 import Swal from 'sweetalert2';
 
 function HospitalDetails() {

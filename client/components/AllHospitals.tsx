@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import HospitalCard from './cards/HospitalCard';
 import Link from 'next/link';
-import { getAllHospitals } from '../Api';
+// import { getAllHospitals } from '../Api';
+import { getAllHospitals } from '../pages/api/index';
 
 function AllHospitals() {
   const [allHospitals, setAllHospitals] = useState([])

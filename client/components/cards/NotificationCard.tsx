@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { getSinglePatient } from '../../Api';
+import { getSinglePatient, deleteBooking } from '../../pages/api/index';
 import { ethers } from 'ethers';
 import ABI from '../../utils/Healthcare.json';
 import { uploadJSONToIPFS } from '../../Api/pinata';
-import { deleteBooking } from '../../Api';
 import Swal from 'sweetalert2';
 import { GetStaticProps } from 'next';
 

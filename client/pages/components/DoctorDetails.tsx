@@ -4,11 +4,16 @@ import NotificationCard from '../../components/cards/NotificationCard';
 import PatientCard from '../../components/cards/PatientCard';
 import { ethers } from 'ethers';
 import ABI from "../../utils/Healthcare.json"
+// import { 
+//   getDoctorByWalletAddress, 
+//   getHospitalByWalletAddress, 
+//   getBookingByDoctorId 
+// } from '../../Api';
 import { 
   getDoctorByWalletAddress, 
   getHospitalByWalletAddress, 
   getBookingByDoctorId 
-} from '../../Api';
+} from '../../pages/api/index';
 
 function DoctorDetails() {
   const [filename, setFilename] = useState('');
