@@ -54,6 +54,7 @@ function AllHospitals() {
             allHospitals.map((hospital: any) => {
               return (
                 <Link 
+                  key={hospital._id}
                   href={{
                     pathname: "/components/HospitalDetails",
                     query: {data: hospital._id}
